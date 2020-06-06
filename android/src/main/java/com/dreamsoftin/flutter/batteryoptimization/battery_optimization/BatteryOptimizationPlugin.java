@@ -6,6 +6,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import android.os.Build;
 import android.os.PowerManager;
 import android.content.Intent;
 import static android.content.Context.POWER_SERVICE;
@@ -56,12 +57,11 @@ public class BatteryOptimizationPlugin implements MethodCallHandler {
     mPowerManager = (PowerManager) (mRegistrar.activeContext().getSystemService(POWER_SERVICE));
 
     // ---- If ignore go to settings, else request ----
-
-    if(mPowerManager.isIgnoringBatteryOptimizations(packageName)) {
-      return true;
-    } else {
-      return false;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return mPowerManager.isIgnoringBatteryOptimizations(packageName);
     }
+
+    return true;
   }
 
   String openBatteryOptimizationSettings() {
